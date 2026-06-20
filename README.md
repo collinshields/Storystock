@@ -34,3 +34,30 @@ pip install -r requirements.txt
 ```Bash
 uvicorn app.main:app --reload
 ```
+
+## Roadmap
+
+### Phase 1
+
+- [ ] Set up FastAPI backend
+- [ ] Create product model
+- [ ] Connect PostgreSQL
+
+### Phase 2
+
+- [ ] Customer management
+- [ ] Supplier management
+- [ ] Purchase orders
+- [ ] Sales orders
+
+### Phase 3
+
+- [ ] Inventory automation
+- [ ] Stock movements
+- [ ] Audit logs
+
+### Phase 4
+
+- [ ] React frontend dashboard
+- [ ] Role-based access control
+- [ ] Reporting dashboard
