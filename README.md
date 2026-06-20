@@ -39,9 +39,9 @@ uvicorn app.main:app --reload
 
 ### Phase 1
 
-- [ ] Set up FastAPI backend
-- [ ] Create product model
-- [ ] Connect PostgreSQL
+- [x] Set up FastAPI backend
+- [x] Create product model
+- [x] Connect PostgreSQL
 
 ### Phase 2
 
