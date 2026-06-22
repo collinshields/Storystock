@@ -1,0 +1,103 @@
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app.database import get_db
+from app.models.supplier import Supplier
+from app.schemas.supplier import (
+    SupplierCreate,
+    SupplierUpdate,
+    SupplierResponse,
+)
+
+router = APIRouter(
+    prefix="/suppliers",
+    tags=["Suppliers"]
+)
+
+@router.post("/", response_model=SupplierResponse)
+def create_supplier(
+    supplier: SupplierCreate,
+    db: Session = Depends(get_db)
+):
+    db_supplier = Supplier(**supplier.model_dump())
+
+    db.add(db_supplier)
+    db.commit()
+    db.refresh(db_supplier)
+
+    return db_supplier
+
+@router.get("/", response_model=list[SupplierResponse])
+def list_suppliers(
+    db: Session = Depends(get_db)
+):
+    return db.query(Supplier).all()
+
+@router.get("/{supplier_id}", response_model=SupplierResponse)
+def get_supplier(
+    supplier_id: int,
+    db: Session = Depends(get_db)
+):
+    supplier = (
+        db.query(Supplier)
+        .filter(Supplier.id == supplier_id)
+        .first()
+    )
+
+    if not supplier:
+        raise HTTPException(
+            status_code=404,
+            detail="Supplier not found"
+        )
+
+    return supplier
+
+@router.put("/{supplier_id}", response_model=SupplierResponse)
+def update_supplier(
+    supplier_id: int,
+    updates: SupplierUpdate,
+    db: Session = Depends(get_db)
+):
+    supplier = (
+        db.query(Supplier)
+        .filter(Supplier.id == supplier_id)
+        .first()
+    )
+
+    if not supplier:
+        raise HTTPException(
+            status_code=404,
+            detail="Supplier not found"
+        )
+
+    for field, value in updates.model_dump(
+        exclude_unset=True
+    ).items():
+        setattr(supplier, field, value)
+
+    db.commit()
+    db.refresh(supplier)
+
+    return supplier
+
+@router.delete("/{supplier_id}")
+def delete_supplier(
+    supplier_id: int,
+    db: Session = Depends(get_db)
+):
+    supplier = (
+        db.query(Supplier)
+        .filter(Supplier.id == supplier_id)
+        .first()
+    )
+
+    if not supplier:
+        raise HTTPException(
+            status_code=404,
+            detail="Supplier not found"
+        )
+
+    db.delete(supplier)
+    db.commit()
+
+    return {"message": "Supplier deleted"}

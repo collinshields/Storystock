@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
 
-
 class CustomerCreate(BaseModel):
     customer_code: str
     name: str
